@@ -8,12 +8,20 @@ src = [
     'source/unittests.d'
 ]
 
+# Explictly link standard library if ldc is used
+if meson.get_compiler('d').get_id() == 'llvm'
+  extra_args = ['-link-defaultlib-shared']
+else
+  extra_args = []
+endif
+
 incdir = include_directories('source')
 
 lib = library('docopt',
     src,
     include_directories: [incdir],
-    install: true, install_dir: 'lib'
+    install: true, install_dir: 'lib',
+    link_args: extra_args
 )
 
 pkgc = import('pkgconfig')
